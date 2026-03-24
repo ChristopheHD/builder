@@ -29,7 +29,6 @@ runs:
         REGISTRY_PREFIX: ${{ inputs.registry-prefix }}
         IMAGE_NAME: ${{ inputs.image-name }}
       run: |
-        REGISTRY_PREFIX="${REGISTRY_PREFIX,,}"
         matrix='{"include":[]}'
         for arch in $(jq -r '.[]' <<< "${ARCHITECTURES}"); do
           case "${arch}" in
@@ -40,7 +39,7 @@ runs:
               exit 1
               ;;
           esac
-          matrix=$(jq -c --arg arch "$arch" --arg os "$os" --arg image "${REGISTRY_PREFIX}/${arch}-${IMAGE_NAME}" \
+          matrix=$(jq -c --arg arch "$arch" --arg os "$os" --arg image "${REGISTRY_PREFIX,,}/${arch}-${IMAGE_NAME}" \
             '.include += [{arch: $arch, os: $os, image: $image}]' <<< "${matrix}")
         done
 
